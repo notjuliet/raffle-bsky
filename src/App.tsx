@@ -148,7 +148,7 @@ const Raffle: Component = () => {
         </button>
       </form>
       <Show when={randomUser()}>
-        <div class="mt-3">
+        <div class="mt-4">
           <a
             href={"https://bsky.app/profile/" + randomUser()}
             class="text-blue-600"
