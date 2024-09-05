@@ -9,7 +9,8 @@ const Raffle: Component = () => {
   const [liked, setLiked] = createSignal(false);
   const [reposted, setReposted] = createSignal(false);
   const [followed, setFollowed] = createSignal(false);
-  const [randomUser, setRandomUser] = createSignal("");
+  const [userHandle, setUserHandle] = createSignal("");
+  const [avatar, setAvatar] = createSignal("");
   const [status, setStatus] = createSignal("");
   const PAGE_LIMIT = 100;
 
@@ -55,6 +56,8 @@ const Raffle: Component = () => {
     };
 
     setStatus("Fetching...");
+    setUserHandle("");
+    setAvatar("");
     const handle = postURL().split("/")[4];
     const rkey = postURL().split("/").pop()!;
     let did = handle;
@@ -97,7 +100,8 @@ const Raffle: Component = () => {
 
     const randomIndex = Math.floor(Math.random() * users.size);
     const res = await agent.getProfile({ actor: [...users][randomIndex] });
-    setRandomUser(res.data.handle);
+    setUserHandle(res.data.handle);
+    if (res.data.avatar) setAvatar(res.data.avatar);
     setStatus("");
   };
 
@@ -152,14 +156,21 @@ const Raffle: Component = () => {
           <Show when={!status()}>Roll</Show>
         </button>
       </form>
-      <Show when={randomUser()}>
-        <div class="mt-4">
-          <a
-            href={"https://bsky.app/profile/" + randomUser()}
-            class="text-blue-600"
-          >
-            @{randomUser()}
-          </a>
+      <Show when={userHandle()}>
+        <div class="flex flex-row items-center mt-5">
+          <Show when={avatar()}>
+            <div class="mr-4">
+              <img class="size-24 rounded-full" src={avatar()} />
+            </div>
+          </Show>
+          <div>
+            <a
+              href={"https://bsky.app/profile/" + userHandle()}
+              class="text-blue-600"
+            >
+              @{userHandle()}
+            </a>
+          </div>
         </div>
       </Show>
     </div>
