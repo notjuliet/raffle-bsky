@@ -57,8 +57,11 @@ const Raffle: Component = () => {
     setStatus("Fetching...");
     const handle = postURL().split("/")[4];
     const rkey = postURL().split("/").pop()!;
-    const res = await agent.resolveHandle({ handle: handle });
-    const did = res.data.did;
+    let did = handle;
+    if (!handle.startsWith("did:")) {
+      const res = await agent.resolveHandle({ handle: handle });
+      did = res.data.did;
+    }
     const uri = "at://" + did + "/app.bsky.feed.post/" + rkey;
 
     let users = new Set<string>();
