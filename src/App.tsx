@@ -10,6 +10,7 @@ const Raffle: Component = () => {
   const [reposted, setReposted] = createSignal(false);
   const [followed, setFollowed] = createSignal(false);
   const [randomUser, setRandomUser] = createSignal("");
+  const [status, setStatus] = createSignal("");
   const PAGE_LIMIT = 100;
 
   const fetch = async () => {
@@ -53,6 +54,7 @@ const Raffle: Component = () => {
       return reposts;
     };
 
+    setStatus("Fetching...");
     const handle = postURL().split("/")[4];
     const rkey = postURL().split("/").pop()!;
     const res = await agent.resolveHandle({ handle: handle });
@@ -91,6 +93,7 @@ const Raffle: Component = () => {
     }
 
     setRandomUser([...users][Math.floor(Math.random() * users.size)]);
+    setStatus("");
   };
 
   return (
@@ -140,7 +143,8 @@ const Raffle: Component = () => {
           onclick={() => fetch()}
           class="hover:bg-slate-200 border border-black text-xl font-semibold py-1 px-3"
         >
-          Roll
+          <Show when={status()}>{status()}</Show>
+          <Show when={!status()}>Roll</Show>
         </button>
       </form>
       <Show when={randomUser()}>
