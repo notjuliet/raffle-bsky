@@ -160,7 +160,9 @@ const Raffle: Component = () => {
         <div class="flex flex-row items-center mt-5">
           <Show when={avatar()}>
             <div class="mr-4">
-              <img class="size-24 rounded-full" src={avatar()} />
+              <a href={"https://bsky.app/profile/" + userHandle()}>
+                <img class="size-24 rounded-full" src={avatar()} />
+              </a>
             </div>
           </Show>
           <div>
