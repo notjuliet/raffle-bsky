@@ -12,6 +12,7 @@ const Raffle: Component = () => {
   const [userHandle, setUserHandle] = createSignal("");
   const [avatar, setAvatar] = createSignal("");
   const [status, setStatus] = createSignal("");
+  const [notice, setNotice] = createSignal("");
   const PAGE_LIMIT = 100;
 
   const fetch = async () => {
@@ -61,6 +62,11 @@ const Raffle: Component = () => {
     const handle = postURL().split("/")[4];
     const rkey = postURL().split("/").pop()!;
     let did = handle;
+    if (!postURL() || !did || !rkey) {
+      setNotice("Post URL incorrect");
+      setStatus("");
+      return;
+    }
     if (!handle.startsWith("did:")) {
       const res = await agent.resolveHandle({ handle: handle });
       did = res.data.did;
@@ -81,6 +87,12 @@ const Raffle: Component = () => {
       } else {
         res.forEach((repost) => users.add(repost.did));
       }
+    }
+
+    if (!users.size) {
+      setNotice("No clout 💀");
+      setStatus("");
+      return;
     }
 
     if (followed()) {
@@ -174,6 +186,9 @@ const Raffle: Component = () => {
             </a>
           </div>
         </div>
+      </Show>
+      <Show when={notice()}>
+        <div class="mt-5">{notice()}</div>
       </Show>
     </div>
   );
