@@ -180,7 +180,7 @@ const Raffle: Component = () => {
 const App: Component = () => {
   return (
     <div class="flex flex-col items-center m-5">
-      <h1 class="text-2xl mb-5">raffle-bsky</h1>
+      <h1 class="text-2xl mb-5">raffle-bsky 🎲</h1>
       <div class="mb-3 text-center">
         <p>
           Roll a random Bluesky user who liked, reposted and/or follows from a
