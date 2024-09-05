@@ -57,6 +57,7 @@ const Raffle: Component = () => {
     };
 
     setStatus("Fetching...");
+    setNotice("");
     setUserHandle("");
     setAvatar("");
     const handle = postURL().split("/")[4];
