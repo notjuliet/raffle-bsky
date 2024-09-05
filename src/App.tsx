@@ -163,8 +163,8 @@ const App: Component = () => {
       <h1 class="text-2xl mb-5">raffle-bsky</h1>
       <div class="mb-3 text-center">
         <p>
-          Roll a random user who liked, reposted and/or follows from a post on
-          Bluesky
+          Roll a random Bluesky user who liked, reposted and/or follows from a
+          post
         </p>
         <div>
           <a
