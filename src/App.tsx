@@ -95,7 +95,9 @@ const Raffle: Component = () => {
       }
     }
 
-    setRandomUser([...users][Math.floor(Math.random() * users.size)]);
+    const randomIndex = Math.floor(Math.random() * users.size);
+    const res = await agent.getProfile({ actor: [...users][randomIndex] });
+    setRandomUser(res.data.handle);
     setStatus("");
   };
 
@@ -156,7 +158,7 @@ const Raffle: Component = () => {
             href={"https://bsky.app/profile/" + randomUser()}
             class="text-blue-600"
           >
-            {randomUser()}
+            @{randomUser()}
           </a>
         </div>
       </Show>
