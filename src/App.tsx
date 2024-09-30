@@ -1,8 +1,12 @@
 import { createSignal, Show, type Component } from "solid-js";
 
-import { AtpAgent } from "@atproto/api";
+import "@atcute/bluesky/lexicons";
+import { XRPC, CredentialManager } from "@atcute/client";
 
-const agent = new AtpAgent({ service: "https://public.api.bsky.app" });
+const manager = new CredentialManager({
+  service: "https://public.api.bsky.app",
+});
+const rpc = new XRPC({ handler: manager });
 
 const Raffle: Component = () => {
   const [postURL, setPostURL] = createSignal("");
@@ -18,10 +22,12 @@ const Raffle: Component = () => {
   const fetch = async () => {
     const fetchLikes = async (uri: string) => {
       const fetchPage = async (cursor?: any) => {
-        return await agent.app.bsky.feed.getLikes({
-          uri: uri,
-          limit: PAGE_LIMIT,
-          cursor: cursor,
+        return await rpc.get("app.bsky.feed.getLikes", {
+          params: {
+            uri: uri,
+            limit: PAGE_LIMIT,
+            cursor: cursor,
+          },
         });
       };
 
@@ -38,10 +44,12 @@ const Raffle: Component = () => {
 
     const fetchReposts = async (uri: string) => {
       const fetchPage = async (cursor?: any) => {
-        return await agent.getRepostedBy({
-          uri: uri,
-          limit: PAGE_LIMIT,
-          cursor: cursor,
+        return await rpc.get("app.bsky.feed.getRepostedBy", {
+          params: {
+            uri: uri,
+            limit: PAGE_LIMIT,
+            cursor: cursor,
+          },
         });
       };
 
@@ -69,7 +77,9 @@ const Raffle: Component = () => {
       return;
     }
     if (!handle.startsWith("did:")) {
-      const res = await agent.resolveHandle({ handle: handle });
+      const res = await rpc.get("com.atproto.identity.resolveHandle", {
+        params: { handle: handle },
+      });
       did = res.data.did;
     }
     const uri = "at://" + did + "/app.bsky.feed.post/" + rkey;
@@ -99,12 +109,17 @@ const Raffle: Component = () => {
     if (followed()) {
       const BATCHSIZE = 30;
       for (let i = 0; i < users.size; i += BATCHSIZE) {
-        const res = await agent.app.bsky.graph.getRelationships({
-          actor: did,
-          others: [...users].slice(i, i + BATCHSIZE),
+        const res = await rpc.get("app.bsky.graph.getRelationships", {
+          params: {
+            actor: did,
+            others: [...users].slice(i, i + BATCHSIZE),
+          },
         });
         res.data.relationships.forEach((actor) => {
-          if (!actor.followedBy) {
+          if (
+            actor.$type === "app.bsky.graph.defs#relationship" &&
+            !actor.followedBy
+          ) {
             users.delete(actor.did);
           }
         });
@@ -112,7 +127,9 @@ const Raffle: Component = () => {
     }
 
     const randomIndex = Math.floor(Math.random() * users.size);
-    const res = await agent.getProfile({ actor: [...users][randomIndex] });
+    const res = await rpc.get("app.bsky.actor.getProfile", {
+      params: { actor: [...users][randomIndex] },
+    });
     setUserHandle(res.data.handle);
     if (res.data.avatar) setAvatar(res.data.avatar);
     setStatus("");
@@ -210,14 +227,6 @@ const App: Component = () => {
             href="https://github.com/notjuliet/raffle-bsky"
           >
             Source Code
-          </a>
-        </div>
-        <div>
-          <a
-            class="text-blue-600 hover:underline"
-            href="https://bsky.app/profile/adorable.mom"
-          >
-            Contact
           </a>
         </div>
       </div>

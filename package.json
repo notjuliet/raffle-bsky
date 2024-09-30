@@ -20,8 +20,8 @@
     "vite-plugin-solid": "^2.8.2"
   },
   "dependencies": {
-    "@atproto/api": "^0.13.6",
-    "@atproto/oauth-client-browser": "^0.2.0",
+    "@atcute/bluesky": "^1.0.7",
+    "@atcute/client": "^2.0.2",
     "solid-js": "^1.8.11"
   }
 }
